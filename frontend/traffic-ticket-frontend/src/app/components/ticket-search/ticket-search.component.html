@@ -1,0 +1,71 @@
+<div class="search-container">
+  <h2>Search for Traffic Tickets</h2>
+  
+  <form [formGroup]="searchForm" (ngSubmit)="onSubmit()" class="search-form">
+    <div class="form-group">
+      <label for="licensePlate">License Plate</label>
+      <input type="text" id="licensePlate" formControlName="licensePlate" placeholder="Enter license plate">
+    </div>
+    <div class="form-group">
+      <label for="driverLicense">Driver's License</label>
+      <input type="text" id="driverLicense" formControlName="driverLicense" placeholder="Enter driver's license">
+    </div>
+    <div class="error-message" *ngIf="searchForm.hasError('atLeastOneRequired') && searchForm.touched">
+      Please enter either a license plate or driver's license number
+    </div>
+    <button type="submit" [disabled]="loading">Search</button>
+  </form>
+
+  <div class="loading" *ngIf="loading">
+    Searching for tickets...
+  </div>
+
+  <div class="error-message" *ngIf="error">
+    {{ error }}
+  </div>
+
+  <div class="results" *ngIf="tickets.length > 0">
+    <h2>Search Results</h2>
+    <div class="ticket-grid">
+      <div class="ticket-card" *ngFor="let ticket of tickets">
+        <span class="ticket-type" [ngClass]="ticket.ticketType.toLowerCase()">
+          {{ ticket.ticketType }}
+        </span>
+        <h3>Ticket #{{ ticket.ticketNumber }}</h3>
+        <p><strong>Amount:</strong> ${{ ticket.fineAmount }}</p>
+        <p><strong>Due Date:</strong> {{ ticket.dueDate | date }}</p>
+        <p><strong>Status:</strong> {{ ticket.paid ? 'Paid' : 'Unpaid' }}</p>
+        <button (click)="selectTicket(ticket)">
+          {{ ticket.paid ? 'View Details' : 'Pay Now' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="no-results" *ngIf="tickets.length === 0 && !loading && searchForm.touched">
+    No tickets found. Please try a different search.
+  </div>
+
+  <!-- Ticket Details Modal -->
+  <div class="modal" *ngIf="selectedTicket" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <button class="close-button" (click)="closeModal()">&times;</button>
+      <h2>Ticket Details</h2>
+      <div class="ticket-details">
+        <p><strong>Ticket Number:</strong> {{ selectedTicket.ticketNumber }}</p>
+        <p><strong>Type:</strong> {{ selectedTicket.ticketType }}</p>
+        <p><strong>Amount:</strong> ${{ selectedTicket.fineAmount }}</p>
+        <p><strong>Due Date:</strong> {{ selectedTicket.dueDate | date }}</p>
+        <p><strong>Status:</strong> {{ selectedTicket.paid ? 'Paid' : 'Unpaid' }}</p>
+        <p><strong>License Plate:</strong> {{ selectedTicket.licensePlateNumber }}</p>
+        <div *ngIf="selectedTicket.vehicle">
+          <p><strong>Owner:</strong> {{ selectedTicket.vehicle.ownerFirstName }} {{ selectedTicket.vehicle.ownerLastName }}</p>
+          <p><strong>Driver's License:</strong> {{ selectedTicket.vehicle.driverLicenseNumber }}</p>
+        </div>
+        <button *ngIf="!selectedTicket.paid" (click)="payTicket(selectedTicket)">
+          Pay Ticket
+        </button>
+      </div>
+    </div>
+  </div>
+</div> 
