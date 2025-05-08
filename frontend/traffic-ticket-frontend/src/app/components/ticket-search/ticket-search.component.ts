@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { TicketService } from '../../services/ticket.service';
-import { Ticket } from '../../models/ticket.model';
+import { TicketService, Ticket } from '../../services/ticket.service';
 
 @Component({
   selector: 'app-ticket-search',
@@ -17,63 +16,117 @@ export class TicketSearchComponent implements OnInit {
   selectedTicket: Ticket | null = null;
   loading = false;
   error: string | null = null;
+  selectedSearchMethod: 'ticketNumber' | 'driverLicense' | 'licensePlate' | null = null;
 
   constructor(
     private fb: FormBuilder,
     private ticketService: TicketService
   ) {
     this.searchForm = this.fb.group({
-      licensePlate: [''],
-      driverLicense: ['']
-    }, { validators: this.atLeastOneRequired });
+      ticketNumber: [''],
+      driverLicense: [''],
+      licensePlate: ['']
+    });
   }
 
   ngOnInit(): void {}
 
-  atLeastOneRequired(group: FormGroup) {
-    const licensePlate = group.get('licensePlate')?.value;
-    const driverLicense = group.get('driverLicense')?.value;
-    return licensePlate || driverLicense ? null : { atLeastOneRequired: true };
+  selectSearchMethod(method: 'ticketNumber' | 'driverLicense' | 'licensePlate'): void {
+    this.selectedSearchMethod = method;
+    this.searchForm.get(method)?.setValidators([Validators.required]);
+    this.searchForm.get(method)?.updateValueAndValidity();
   }
 
-  onSubmit() {
-    if (this.searchForm.valid) {
-      this.loading = true;
-      this.error = null;
-      const searchData = this.searchForm.value;
+  clearSearchMethod(): void {
+    if (this.selectedSearchMethod) {
+      this.searchForm.get(this.selectedSearchMethod)?.clearValidators();
+      this.searchForm.get(this.selectedSearchMethod)?.updateValueAndValidity();
+      this.searchForm.get(this.selectedSearchMethod)?.setValue('');
+    }
+    this.selectedSearchMethod = null;
+    this.tickets = [];
+    this.error = null;
+  }
 
-      this.ticketService.searchTickets(searchData).subscribe({
-        next: (tickets) => {
-          this.tickets = tickets;
-          this.loading = false;
-        },
-        error: (err) => {
-          this.error = 'Error searching for tickets. Please try again.';
-          this.loading = false;
-        }
-      });
+  getSearchMethodLabel(): string {
+    switch (this.selectedSearchMethod) {
+      case 'ticketNumber':
+        return 'Ticket Number';
+      case 'driverLicense':
+        return 'Driver\'s License Number';
+      case 'licensePlate':
+        return 'License Plate Number';
+      default:
+        return '';
     }
   }
 
-  selectTicket(ticket: Ticket) {
+  getSearchMethodPlaceholder(): string {
+    switch (this.selectedSearchMethod) {
+      case 'ticketNumber':
+        return 'Enter ticket number';
+      case 'driverLicense':
+        return 'Enter driver\'s license number';
+      case 'licensePlate':
+        return 'Enter license plate number';
+      default:
+        return '';
+    }
+  }
+
+  onSubmit(): void {
+    if (this.searchForm.valid && this.selectedSearchMethod) {
+      this.loading = true;
+      this.error = null;
+      this.tickets = [];
+
+      const searchValue = this.searchForm.get(this.selectedSearchMethod)?.value;
+
+      if (this.selectedSearchMethod === 'ticketNumber') {
+        this.ticketService.getTicket(searchValue).subscribe({
+          next: (ticket: Ticket) => {
+            this.tickets = [ticket];
+            this.loading = false;
+          },
+          error: (error: Error) => {
+            this.error = 'Error searching for ticket';
+            this.loading = false;
+          }
+        });
+      } else {
+        this.ticketService.searchTickets({
+          licensePlate: this.selectedSearchMethod === 'licensePlate' ? searchValue : '',
+          driverLicense: this.selectedSearchMethod === 'driverLicense' ? searchValue : ''
+        }).subscribe({
+          next: (tickets: Ticket[]) => {
+            this.tickets = tickets;
+            this.loading = false;
+          },
+          error: (error: Error) => {
+            this.error = 'Error searching for tickets';
+            this.loading = false;
+          }
+        });
+      }
+    }
+  }
+
+  selectTicket(ticket: Ticket): void {
     this.selectedTicket = ticket;
   }
 
-  closeModal() {
+  closeModal(): void {
     this.selectedTicket = null;
   }
 
-  payTicket(ticket: Ticket) {
+  payTicket(ticket: Ticket): void {
     this.ticketService.payTicket(ticket.ticketNumber).subscribe({
       next: () => {
-        const index = this.tickets.findIndex(t => t.ticketNumber === ticket.ticketNumber);
-        if (index !== -1) {
-          this.tickets[index] = { ...ticket, paid: true };
-        }
-        this.selectedTicket = null;
+        ticket.paid = true;
+        this.closeModal();
       },
-      error: (err) => {
-        this.error = 'Error processing payment. Please try again.';
+      error: (error: Error) => {
+        this.error = 'Error processing payment';
       }
     });
   }

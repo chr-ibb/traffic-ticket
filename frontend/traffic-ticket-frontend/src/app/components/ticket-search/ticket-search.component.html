@@ -1,19 +1,39 @@
 <div class="search-container">
   <h2>Search for Traffic Tickets</h2>
   
-  <form [formGroup]="searchForm" (ngSubmit)="onSubmit()" class="search-form">
+  <!-- Search Method Selection -->
+  <div class="search-methods" *ngIf="!selectedSearchMethod">
+    <div class="search-method-row">
+      <span class="method-text">Search by Ticket Number</span>
+      <button (click)="selectSearchMethod('ticketNumber')">Continue</button>
+    </div>
+    <div class="search-method-row">
+      <span class="method-text">Search by Driver's License Number</span>
+      <button (click)="selectSearchMethod('driverLicense')">Continue</button>
+    </div>
+    <div class="search-method-row">
+      <span class="method-text">Search by License Plate Number</span>
+      <button (click)="selectSearchMethod('licensePlate')">Continue</button>
+    </div>
+  </div>
+
+  <!-- Search Form -->
+  <form [formGroup]="searchForm" (ngSubmit)="onSubmit()" class="search-form" *ngIf="selectedSearchMethod">
     <div class="form-group">
-      <label for="licensePlate">License Plate</label>
-      <input type="text" id="licensePlate" formControlName="licensePlate" placeholder="Enter license plate">
+      <label [for]="selectedSearchMethod">
+        {{ getSearchMethodLabel() }}
+      </label>
+      <input 
+        type="text" 
+        [id]="selectedSearchMethod" 
+        [formControlName]="selectedSearchMethod" 
+        [placeholder]="getSearchMethodPlaceholder()"
+      >
+      <div class="button-container">
+        <button type="button" class="back-button" (click)="clearSearchMethod()">Back</button>
+        <button type="submit" [disabled]="loading">Search</button>
+      </div>
     </div>
-    <div class="form-group">
-      <label for="driverLicense">Driver's License</label>
-      <input type="text" id="driverLicense" formControlName="driverLicense" placeholder="Enter driver's license">
-    </div>
-    <div class="error-message" *ngIf="searchForm.hasError('atLeastOneRequired') && searchForm.touched">
-      Please enter either a license plate or driver's license number
-    </div>
-    <button type="submit" [disabled]="loading">Search</button>
   </form>
 
   <div class="loading" *ngIf="loading">
