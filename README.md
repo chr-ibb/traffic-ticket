@@ -23,6 +23,7 @@ A project website where the user can search for traffic tickets and then "pay" t
   - Spring Data JPA
   - RESTful API architecture
   - SQLite database
+  - Maven
 
 - **Testing**
   - JUnit 5
