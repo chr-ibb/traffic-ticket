@@ -1,6 +1,6 @@
 A project website where the user can search for traffic tickets and then "pay" them. I made the project to get some experience with Cursor, Angular, and Springboard. 
 
-![](traffic-ticket.gif)
+![](traffic-ticket.mp4)
 
 ## Key Features
 - Three search methods: ticket number, driver's license, or license plate
