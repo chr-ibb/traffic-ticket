@@ -76,9 +76,7 @@ class TicketServiceTest {
     void findByDriverLicense_ShouldReturnMatchingTickets() {
         // Arrange
         String driverLicense = "DL123456";
-        when(vehicleRepository.findByDriverLicenseNumber(driverLicense))
-            .thenReturn(Optional.of(testVehicle));
-        when(ticketRepository.findByLicensePlateNumber(testVehicle.getLicensePlateNumber()))
+        when(ticketRepository.findByVehicle_DriverLicenseNumber(driverLicense))
             .thenReturn(Arrays.asList(testTicket));
 
         // Act
@@ -88,7 +86,6 @@ class TicketServiceTest {
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals(driverLicense, result.get(0).getVehicle().getDriverLicenseNumber());
-        verify(vehicleRepository).findByDriverLicenseNumber(driverLicense);
-        verify(ticketRepository).findByLicensePlateNumber(testVehicle.getLicensePlateNumber());
+        verify(ticketRepository).findByVehicle_DriverLicenseNumber(driverLicense);
     }
 } 
