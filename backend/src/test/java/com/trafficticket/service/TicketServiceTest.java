@@ -88,4 +88,35 @@ class TicketServiceTest {
         assertEquals(driverLicense, result.get(0).getVehicle().getDriverLicenseNumber());
         verify(ticketRepository).findByVehicle_DriverLicenseNumber(driverLicense);
     }
+
+    @Test
+    void findByTicketNumber_ShouldReturnTicket_WhenExists() {
+        // Arrange
+        String ticketNumber = "T123456789";
+        when(ticketRepository.findById(ticketNumber))
+            .thenReturn(Optional.of(testTicket));
+
+        // Act
+        Optional<Ticket> result = ticketService.findByTicketNumber(ticketNumber);
+
+        // Assert
+        assertTrue(result.isPresent());
+        assertEquals(ticketNumber, result.get().getTicketNumber());
+        verify(ticketRepository).findById(ticketNumber);
+    }
+
+    @Test
+    void findByTicketNumber_ShouldReturnEmpty_WhenNotExists() {
+        // Arrange
+        String ticketNumber = "NONEXISTENT";
+        when(ticketRepository.findById(ticketNumber))
+            .thenReturn(Optional.empty());
+
+        // Act
+        Optional<Ticket> result = ticketService.findByTicketNumber(ticketNumber);
+
+        // Assert
+        assertTrue(result.isEmpty());
+        verify(ticketRepository).findById(ticketNumber);
+    }
 } 

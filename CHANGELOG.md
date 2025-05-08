@@ -168,4 +168,35 @@ All notable changes to the Traffic Ticket Management System will be documented i
    - Add unit tests for services
    - Implement integration tests
    - Add end-to-end testing
+   - Set up CI/CD pipeline
+
+## [0.9.0] - 2024-03-19
+
+### Added
+- Added new search method: search by ticket number
+- Added step-by-step search flow with method selection
+- Added unit tests for TicketService:
+
+### Changed
+- Redesigned search interface to use a two-step process:
+  - First select search method (ticket number, driver's license, or license plate)
+  - Then enter the search value in a single field
+- Updated search form to show only relevant input field based on selected search method
+- Improved search method labels for better clarity
+
+### Fixed
+- Resolved issue with driver's license search functionality
+- Fixed form validation to only show error messages after search attempt
+- Corrected button positioning and styling issues
+
+### Planned Next Steps
+1. Receipt Generation
+   - Create receipt component in frontend
+   - Add receipt generation endpoint in backend
+   - Implement PDF generation service
+   - Add download/print functionality
+
+2. Testing
+   - Implement integration tests
+   - Add end-to-end testing
    - Set up CI/CD pipeline 
