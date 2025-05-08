@@ -175,7 +175,7 @@ All notable changes to the Traffic Ticket Management System will be documented i
 ### Added
 - Added new search method: search by ticket number
 - Added step-by-step search flow with method selection
-- Added unit tests for TicketService:
+- Added unit tests for TicketService
 
 ### Changed
 - Redesigned search interface to use a two-step process:
