@@ -62,7 +62,7 @@
     </div>
   </div>
 
-  <div class="no-results" *ngIf="tickets.length === 0 && !loading && searchForm.touched">
+  <div class="no-results" *ngIf="tickets.length === 0 && !loading && hasSearched">
     No tickets found. Please try a different search.
   </div>
 

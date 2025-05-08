@@ -17,6 +17,7 @@ export class TicketSearchComponent implements OnInit {
   loading = false;
   error: string | null = null;
   selectedSearchMethod: 'ticketNumber' | 'driverLicense' | 'licensePlate' | null = null;
+  hasSearched = false;
 
   constructor(
     private fb: FormBuilder,
@@ -35,6 +36,7 @@ export class TicketSearchComponent implements OnInit {
     this.selectedSearchMethod = method;
     this.searchForm.get(method)?.setValidators([Validators.required]);
     this.searchForm.get(method)?.updateValueAndValidity();
+    this.hasSearched = false;
   }
 
   clearSearchMethod(): void {
@@ -46,6 +48,7 @@ export class TicketSearchComponent implements OnInit {
     this.selectedSearchMethod = null;
     this.tickets = [];
     this.error = null;
+    this.hasSearched = false;
   }
 
   getSearchMethodLabel(): string {
@@ -79,6 +82,7 @@ export class TicketSearchComponent implements OnInit {
       this.loading = true;
       this.error = null;
       this.tickets = [];
+      this.hasSearched = true;
 
       const searchValue = this.searchForm.get(this.selectedSearchMethod)?.value;
 
