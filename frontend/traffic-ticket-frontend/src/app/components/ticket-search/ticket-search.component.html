@@ -72,19 +72,25 @@
       <button class="close-button" (click)="closeModal()">&times;</button>
       <h2>Ticket Details</h2>
       <div class="ticket-details">
-        <p><strong>Ticket Number:</strong> {{ selectedTicket.ticketNumber }}</p>
-        <p><strong>Type:</strong> {{ selectedTicket.ticketType }}</p>
-        <p><strong>Amount:</strong> ${{ selectedTicket.fineAmount }}</p>
-        <p><strong>Due Date:</strong> {{ selectedTicket.dueDate | date }}</p>
-        <p><strong>Status:</strong> {{ selectedTicket.paid ? 'Paid' : 'Unpaid' }}</p>
-        <p><strong>License Plate:</strong> {{ selectedTicket.licensePlateNumber }}</p>
-        <div *ngIf="selectedTicket.vehicle">
-          <p><strong>Owner:</strong> {{ selectedTicket.vehicle.ownerFirstName }} {{ selectedTicket.vehicle.ownerLastName }}</p>
-          <p><strong>Driver's License:</strong> {{ selectedTicket.vehicle.driverLicenseNumber }}</p>
+        <div *ngIf="paymentSuccess" class="payment-success">
+          <h3>Payment Successful!</h3>
+          <button (click)="paymentSuccess = false">View Details</button>
         </div>
-        <button *ngIf="!selectedTicket.paid" (click)="payTicket(selectedTicket)">
-          Pay Ticket
-        </button>
+        <div *ngIf="!paymentSuccess">
+          <p><strong>Ticket Number:</strong> {{ selectedTicket.ticketNumber }}</p>
+          <p><strong>Type:</strong> {{ selectedTicket.ticketType }}</p>
+          <p><strong>Amount:</strong> ${{ selectedTicket.fineAmount }}</p>
+          <p><strong>Due Date:</strong> {{ selectedTicket.dueDate | date }}</p>
+          <p><strong>Status:</strong> {{ selectedTicket.paid ? 'Paid' : 'Unpaid' }}</p>
+          <p><strong>License Plate:</strong> {{ selectedTicket.licensePlateNumber }}</p>
+          <div *ngIf="selectedTicket.vehicle">
+            <p><strong>Owner:</strong> {{ selectedTicket.vehicle.ownerFirstName }} {{ selectedTicket.vehicle.ownerLastName }}</p>
+            <p><strong>Driver's License:</strong> {{ selectedTicket.vehicle.driverLicenseNumber }}</p>
+          </div>
+          <button *ngIf="!selectedTicket.paid" (click)="payTicket(selectedTicket)">
+            Pay Ticket
+          </button>
+        </div>
       </div>
     </div>
   </div>

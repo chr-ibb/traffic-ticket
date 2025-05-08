@@ -263,6 +263,32 @@
           background: #218838;
         }
       }
+
+      .payment-success {
+        text-align: center;
+        padding: 2rem 0;
+
+        h3 {
+          color: #28a745;
+          font-size: 1.5rem;
+          margin-bottom: 1.5rem;
+        }
+
+        button {
+          width: 100%;
+          padding: 0.75rem;
+          background: #007bff;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: background-color 0.2s;
+
+          &:hover {
+            background: #0056b3;
+          }
+        }
+      }
     }
   }
 }

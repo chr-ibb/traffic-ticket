@@ -18,6 +18,7 @@ export class TicketSearchComponent implements OnInit {
   error: string | null = null;
   selectedSearchMethod: 'ticketNumber' | 'driverLicense' | 'licensePlate' | null = null;
   hasSearched = false;
+  paymentSuccess = false;
 
   constructor(
     private fb: FormBuilder,
@@ -121,13 +122,14 @@ export class TicketSearchComponent implements OnInit {
 
   closeModal(): void {
     this.selectedTicket = null;
+    this.paymentSuccess = false;
   }
 
   payTicket(ticket: Ticket): void {
     this.ticketService.payTicket(ticket.ticketNumber).subscribe({
       next: () => {
         ticket.paid = true;
-        this.closeModal();
+        this.paymentSuccess = true;
       },
       error: (error: Error) => {
         this.error = 'Error processing payment';
