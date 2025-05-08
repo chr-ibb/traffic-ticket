@@ -50,7 +50,7 @@ The Traffic Ticket Management System is a web-based application that allows user
 - Fine amount
 - Due date
 
-#### Drivers Table
+#### Vehicles Table
 - License plate number
 - Driver's license number
 - Last name
